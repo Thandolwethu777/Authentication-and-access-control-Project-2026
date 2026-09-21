@@ -1,2 +1,4 @@
 # MariaDB-Authentication-and-access-control-Project-2026
-Relational database implementation of multi-tier authentication, user permissions, and audit logging
+A project for area 5, "Authentication and access control" for the
+MariaDB student database projects, 2026-09.
+
