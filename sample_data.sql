@@ -29,3 +29,10 @@ VALUES
 (2, 78.00),
 (3, 91.00),
 (4, 73.00);
+
+INSERT INTO lecturers
+    (first_name, last_name, email, department)
+VALUES
+    ('Maria', 'Schmidt', 'maria.schmidt@example.com', 'Computer Science'),
+    ('James', 'Johnson', 'james.johnson@example.com', 'Computer Science'),
+    ('Anna', 'Muller', 'anna.muller@example.com', 'Economics');
