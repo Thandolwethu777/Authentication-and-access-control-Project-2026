@@ -31,3 +31,10 @@ CREATE TABLE IF NOT EXISTS grades (
     grade DECIMAL(5,2),
     FOREIGN KEY (enrolment_id) REFERENCES enrolments(enrolment_id)
 );
+CREATE TABLE lecturers (
+    lecturer_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    department VARCHAR(100) NOT NULL
+);
