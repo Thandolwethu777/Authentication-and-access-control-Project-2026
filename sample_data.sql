@@ -36,3 +36,12 @@ VALUES
     ('Maria', 'Schmidt', 'maria.schmidt@example.com', 'Computer Science'),
     ('James', 'Johnson', 'james.johnson@example.com', 'Computer Science'),
     ('Anna', 'Muller', 'anna.muller@example.com', 'Economics');
+
+INSERT INTO app_users
+    (username, email, user_role, student_id, lecturer_id)
+VALUES
+    ('student1', 'thando@example.com', 'student', 1, NULL),
+    ('student2', 'sarah@example.com', 'student', 2, NULL),
+    ('lecturer1', 'maria.schmidt@example.com', 'lecturer', NULL, 1),
+    ('admin1', 'admin@example.com', 'admin', NULL, NULL);
+
