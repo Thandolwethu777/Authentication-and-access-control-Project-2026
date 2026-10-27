@@ -1,47 +1,60 @@
-document.addEventListener("DOMContentLoaded", function () {
 
+document.addEventListener("DOMContentLoaded", function () {
     const loginForm = document.getElementById("loginForm");
     const loginMessage = document.getElementById("loginMessage");
     const loginButton = document.querySelector(".login-button");
 
-    loginForm.addEventListener("submit", function (event) {
-
-        // Prevent the browser from submitting the form normally
+    loginForm.addEventListener("submit", async function (event) {
         event.preventDefault();
 
         const username = document.getElementById("username").value.trim();
-        const password = document.getElementById("password").value.trim();
+        const password = document.getElementById("password").value;
 
-        // Check that both fields have something in them
         if (username === "" || password === "") {
-
             loginMessage.textContent =
                 "Please enter your username and password.";
-
             loginMessage.style.color = "red";
-
             return;
         }
 
-        // Show login message
         loginMessage.textContent = "Signing in...";
-
         loginMessage.style.color = "green";
-
-        // Change button
         loginButton.disabled = true;
 
-        loginButton.innerHTML =
-            '<span>Signing in...</span><span class="arrow">→</span>';
+        try {
+            const response = await fetch("/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                })
+            });
 
+            const result = await response.json();
 
-        // Open dashboard
-        setTimeout(function () {
+            if (!response.ok) {
+                loginMessage.textContent =
+                    result.error || "Login failed. Please try again.";
+                loginMessage.style.color = "red";
+                return;
+            }
 
-            window.location.href = "dashboard.html";
+            loginMessage.textContent = "Login successful!";
+            loginMessage.style.color = "green";
 
-        }, 800);
+            window.location.href = "/dashboard.html";
 
+        } catch (error) {
+            loginMessage.textContent =
+                "Could not connect to the server. Please try again.";
+            loginMessage.style.color = "red";
+        } finally {
+            loginButton.disabled = false;
+            loginButton.innerHTML =
+                '<span>Sign In</span><span class="arrow">→</span>';
+        }
     });
-
 });
