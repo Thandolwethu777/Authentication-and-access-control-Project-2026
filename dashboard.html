@@ -20,7 +20,7 @@
   <header class="topbar">
     <div class="topinner">
       <div class="brand"><div class="crest"><svg class="icon" style="width:32px;height:32px"><use href="#i-cap"/></svg></div><div><strong>BREMEN UNIVERSITY</strong><small>STUDENT SECURITY PORTAL</small></div></div>
-      <div class="topright"><span class="userlabel">Student account</span><div class="avatar" aria-hidden="true">S</div><a class="signout" href="index.html">Sign out</a></div>
+      <div class="topright"><span class="userlabel">Student account</span><div class="avatar" aria-hidden="true">S</div><a class="signout" href="#" id="logoutButton">Sign out</a></div>
     </div>
     <div class="navwrap"><nav class="nav" aria-label="Academic navigation">
       <button class="tab active" data-view="courses" aria-current="page"><svg class="icon"><use href="#i-book"/></svg>Courses</button>
@@ -56,5 +56,6 @@
     document.querySelectorAll('[data-view]').forEach(button => button.addEventListener('click', () => showView(button.dataset.view)));
     document.querySelectorAll('[data-go]').forEach(button => button.addEventListener('click', () => showView(button.dataset.go)));
   </script>
+  <script src="/dashboard.js"></script>
 </body>
 </html>
