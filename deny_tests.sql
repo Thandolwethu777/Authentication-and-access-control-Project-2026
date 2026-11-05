@@ -1,45 +1,14 @@
 
--- Test MariaDB GRANT, ROLE and DENY functionality.
--- The tests demonstrate that users can access permitted
--- database tables but are blocked from restricted operations.
-
--- IMPORTANT:
--- 1. Run each test in the correct HeidiSQL session.
--- 2. Execute queries ONE AT A TIME.
--- 3. Access-denied errors are EXPECTED for restricted queries.
--- 4. Do not run restricted-user tests as MariaDB ADMIN.
-
--- SECTION 1: VERIFY ROLE CONFIGURATION
--- SESSION: MariaDB ADMIN
--- Check the MariaDB version.
 SELECT VERSION();
 
--- Check permissions for the demonstration role.
--- Expected:
--- GRANT SELECT ON constructor_security.*
--- DENY SELECT ON constructor_security.app_users
 SHOW GRANTS FOR portal_demo_role;
 
--- Check permissions for the real student role.
--- Expected: DENY SELECT on app_users
--- and DENY UPDATE, DELETE on grades.
 SHOW GRANTS FOR student_role;
 
--- Check permissions for the real lecturer role.
--- Expected: DENY SELECT on app_users
--- and DENY DELETE on grades.
 SHOW GRANTS FOR lecturer_role;
 
--- Check administrator permissions.
 SHOW GRANTS FOR admin_role;
 
-
--- SECTION 2: DEMONSTRATION ROLE TEST
--- SESSION: DENY TEST
--- USER: deny_test
-
--- Verify the authenticated account and active role.
--- Expected role: portal_demo_role
 SELECT CURRENT_USER(), CURRENT_ROLE();
 
 -- TEST 1: ALLOWED
