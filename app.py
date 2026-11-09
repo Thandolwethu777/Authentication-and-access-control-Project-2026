@@ -176,9 +176,10 @@ def login():
         connection = get_connection()
         cursor = connection.cursor()
 
+        
         cursor.execute(
             """
-            SELECT user_id, username, password_hash, app_role
+            SELECT app_user_id, username, password_hash, user_role
             FROM app_users
             WHERE username = ? AND is_active = TRUE
             """,
@@ -187,8 +188,9 @@ def login():
 
         user = cursor.fetchone()
 
-        if user is None or not check_password_hash(user[2], password):
+        if user is None or user[2] is None or not check_password_hash(user[2], password):
             return jsonify({"error": "Invalid username or password"}), 401
+
         session.clear()
         session["user_id"] = user[0]
         session["username"] = user[1]
@@ -202,6 +204,7 @@ def login():
                 "app_role": user[3],
             },
         }), 200
+
 
     except Exception:
         app.logger.exception("Login failed due to a server error")
