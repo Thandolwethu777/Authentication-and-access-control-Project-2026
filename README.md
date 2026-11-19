@@ -174,12 +174,6 @@ The frontend was designed to support the following interactions:
 | Courses section | Displays course information |
 | Enrollment section | Displays enrollment information |
 
-These interactions should be verified during final integration testing.
 
-### Frontend Contribution// NOT SURE IF THIS IS COMPULSORY
-
-The frontend development focused on designing and implementing the user interface of the Student Security Portal, including the login page, student dashboard, navigation components, styling, and integration with the backend API.
-
-The objective was to provide an accessible and organized interface through which users could interact with the academic management system.
 
 
