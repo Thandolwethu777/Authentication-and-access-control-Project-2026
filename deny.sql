@@ -18,3 +18,7 @@ TO student_role;
 -- policy, but must never delete grade records.
 DENY DELETE ON constructor_security.grades
 TO lecturer_role;
+
+-- Explicit DENY demonstration
+DENY SELECT ON constructor_security.app_users
+TO portal_demo_role;
