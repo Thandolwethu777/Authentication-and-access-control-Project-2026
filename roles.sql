@@ -5,7 +5,7 @@ USE constructor_security;
 -- STUDENT ROLE
 
 
-CREATE ROLE student_role;
+CREATE ROLE IF NOT EXISTS student_role;
 
 GRANT SELECT
 ON constructor_security.students
@@ -27,7 +27,7 @@ TO student_role;
 -- LECTURER ROLE
 
 
-CREATE ROLE lecturer_role;
+CREATE ROLE IF NOT EXISTS lecturer_role;
 
 GRANT SELECT
 ON constructor_security.students
@@ -54,7 +54,7 @@ TO lecturer_role;
 -- ADMIN ROLE
 
 
-CREATE ROLE admin_role;
+CREATE ROLE IF NOT EXISTS admin_role;
 
 GRANT ALL PRIVILEGES
 ON constructor_security.*
