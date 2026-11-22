@@ -55,7 +55,7 @@ The table below shows what each table stores. It is a logical overview, rather t
 | `courses` | `course_id` | `course_code`, `course_name` | Course details; assigned lecturer in the integrated application |
 | `enrolments` | `enrolment_id` | `student_id`, `course_id`, `enrolment_date` | Links students to courses |
 | `grades` | `grade_id` | `enrolment_id`, `grade` | Links grades to enrolments |
-| `app_users` | `user_id` | `username`, `email`, `app_role`, `student_id`, `lecturer_id`, `password_hash`, `is_active`, `created_at` | Portal login and account identity |
+| `app_users` | `app_user_id` | `username`, `email`, `user_role`, `student_id`, `lecturer_id`, `password_hash`, `is_active`, `created_at` | Portal login and account identity |
 
 
 ### 4.2 Create the database and insert sample data
@@ -211,44 +211,85 @@ Check both plugins are active. The password policy requires eight characters, up
 
 ### 5.2 Create portal login accounts
 
-These accounts are stored in `app_users`, separate from MariaDB server accounts. Generate a Werkzeug hash separately for each chosen portal password:
+### 5.2 Configure portal login accounts
 
-```powershell
-.\.venv\Scripts\python.exe -c "from werkzeug.security import generate_password_hash; print(generate_password_hash(input('Enter portal password to hash: ')))"
-```
+The portal accounts are stored in `app_users`, separate
+from MariaDB server accounts. The `sample_data.sql` script
+creates four demonstration accounts:
 
-Keep the plaintext passwords privately for login testing. Copy only the complete generated hash into the SQL statements. As database administrator, inspect the actual schema and sample records:
+| Username | Role |
+|---|---|
+| student1 | Student |
+| student2 | Student |
+| lecturer1 | Lecturer |
+| admin1 | Administrator |
+
+These accounts are initially created without password
+hashes. Verify the existing accounts and their associations
+in the administrator SQL session:
 
 ```sql
 USE constructor_security;
+
 DESCRIBE app_users;
-SELECT * FROM students;
-SELECT * FROM lecturers;
-```
 
-Use the student and lecturer IDs returned by the queries above. Replace each hash placeholder with the corresponding generated hash. Choose unique usernames and email addresses.
-
-```sql
-INSERT INTO app_users
- (username, email, app_role, student_id, lecturer_id, password_hash, is_active)
-VALUES ('student.login', 'student@example.test', 'student', 1, NULL,
- 'PASTE_STUDENT_HASH_HERE', TRUE);
-
-INSERT INTO app_users
- (username, email, app_role, student_id, lecturer_id, password_hash, is_active)
-VALUES ('lecturer.login', 'lecturer@example.test', 'lecturer', NULL, 1,
- 'PASTE_LECTURER_HASH_HERE', TRUE);
-
-INSERT INTO app_users
- (username, email, app_role, student_id, lecturer_id, password_hash, is_active)
-VALUES ('admin.login', 'admin@example.test', 'admin', NULL, NULL,
- 'PASTE_ADMIN_HASH_HERE', TRUE);
-
-SELECT user_id, username, email, app_role, student_id, lecturer_id, is_active
+SELECT app_user_id, username, user_role,
+       student_id, lecturer_id, is_active
 FROM app_users;
 ```
 
-The IDs of 1 are examples only. Verify account links and active status.
+Generate a Werkzeug password hash for each account
+using PowerShell:
+
+```powershell
+.\.venv\Scripts\python.exe -c "from werkzeug.security import generate_password_hash; from getpass import getpass; print(generate_password_hash(getpass('Enter portal password: ')))"
+```
+
+Run the command four times, choosing a separate password
+for each account. Keep the plaintext passwords privately
+for login testing.
+
+Update the existing accounts by replacing each placeholder
+with its corresponding complete generated hash:
+
+```sql
+UPDATE constructor_security.app_users
+SET password_hash = 'PASTE_STUDENT1_HASH_HERE'
+WHERE username = 'student1';
+
+UPDATE constructor_security.app_users
+SET password_hash = 'PASTE_STUDENT2_HASH_HERE'
+WHERE username = 'student2';
+
+UPDATE constructor_security.app_users
+SET password_hash = 'PASTE_LECTURER_HASH_HERE'
+WHERE username = 'lecturer1';
+
+UPDATE constructor_security.app_users
+SET password_hash = 'PASTE_ADMIN_HASH_HERE'
+WHERE username = 'admin1';
+```
+
+Verify that all accounts are active and have password
+hashes without displaying the hashes themselves:
+
+```sql
+SELECT app_user_id, username, user_role,
+       student_id, lecturer_id, is_active,
+       CASE
+           WHEN password_hash IS NULL THEN 'Missing'
+           WHEN password_hash = '' THEN 'Empty'
+           ELSE 'Present'
+       END AS password_status
+FROM constructor_security.app_users;
+```
+
+All four accounts should be active, with a password
+status of Present.
+
+The two student accounts allow testing of student-specific
+access restrictions. Do not commit plaintext passwords
+or generated password hashes to the repository.
 
 ### 5.3 Configure Flask and TLS
 
@@ -302,7 +343,12 @@ Make sure MariaDB is running. From the project folder, run:
 .\.venv\Scripts\python.exe app.py
 ```
 
-Open http://127.0.0.1:5000 in a browser. Sign in with `student.login`, `lecturer.login` or `admin.login` and the password you chose for that account. Flask serves the frontend, so no separate web server is needed.
+Open http://127.0.0.1:5000 in a browser. Sign in with
+`student1`, `student2`, `lecturer1` or `admin1` and the
+password configured for that account in Section 5.2.
+
+Flask serves the frontend, so no separate web server
+is needed.
 
 ## 7. Security Testing
 
