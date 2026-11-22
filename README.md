@@ -323,6 +323,14 @@ Run the TLS verification script from the project root:
 
 The script should show a nonempty TLS version and cipher. Our results are shown in Section 7.3.
 
+![TLS session verification](screenshots/TLS%20session%20verification.png)
+
+![TLS connection rejected](screenshots/Tls%20connection%20rejected.png)
+
+![Python TLS verification](screenshots/python_tls_verification.png)
+
+![TLS certificate verification](screenshots/tls_certificate_verification.png)
+
 ## 6. Frontend
 
 The frontend was developed with HTML5, CSS3 and JavaScript. It includes a university-themed login page, feedback for unsuccessful logins and dashboard navigation. Students can view grades, courses and enrolments. JavaScript sends requests to Flask and displays the returned information. The frontend does not handle database connections or serve as the final security boundary.
@@ -383,11 +391,13 @@ The courses query succeeded, while the app_users query was rejected. This demons
 
 **Evidence:**
 
-⭐ DENY role grants
+![Deny role grants](screenshots/Deny%20role%20grants.png)
 
-⭐ Allowed courses query
+![DENY allowed operation](screenshots/Deny%20allowed.png)
 
-⭐ Blocked app_users query
+![DENY blocked operation](screenshots/Deny%20blocked.png)
+
+
 
 For the student and lecturer DENY policy, repeat direct database tests as student and lecturer accounts, checking that students cannot read `app_users` or update/delete grades and lecturers cannot delete grades. Use safe no-row update/delete probes or disposable data. Record actual outcomes separately from the `portal_demo_role` demonstration.
 
