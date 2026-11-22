@@ -15,4 +15,6 @@ def get_connection():
         password=os.environ["DB_PASSWORD"],
         database=os.environ["DB_NAME"],
         plugin_dir=os.environ["DB_PLUGIN_DIR"],
+        ssl=True,
+        ssl_verify_cert=True
     )
