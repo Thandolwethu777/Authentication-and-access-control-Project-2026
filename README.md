@@ -115,58 +115,94 @@ These application roles are distinct from MariaDB database roles: all website re
 
 ### 5.1 PARSEC and database password policies
 
-In the administrator SQL session, check the server version and plugin directory:
+In the administrator SQL session, check the server version,
+plugin directory and PARSEC status:
 
 ```sql
 SELECT VERSION();
 SHOW VARIABLES LIKE 'plugin_dir';
-SHOW PLUGINS;
+
+SELECT PLUGIN_NAME, PLUGIN_STATUS, PLUGIN_LIBRARY
+FROM information_schema.PLUGINS
+WHERE PLUGIN_NAME LIKE '%parsec%';
 ```
 
-Check that the PARSEC plugin DLL is available in the reported plugin directory. If PARSEC is not already installed, run:
+If PARSEC is already ACTIVE, no additional installation
+is required. A NULL value under PLUGIN_LIBRARY indicates
+that the plugin is built into the server.
+
+In our MariaDB 13.1.1 Windows installation, PARSEC is
+built into the server.
+
+If PARSEC is not listed and the server-side shared
+library is available, execute:
 
 ```sql
 INSTALL SONAME 'auth_parsec';
-SHOW PLUGINS;
 ```
 
-Confirm PARSEC is active. Create the dedicated account (only if it does not already exist), replacing the placeholder with a strong private password. The backend role must already exist from `roles.sql`.
+Verify that PARSEC is ACTIVE before proceeding.
+The client-side parsec.dll must not be installed
+as a server plugin.
+
+Create the dedicated account (only if it does not
+already exist), replacing the placeholder with a strong
+private password. The backend role must already exist
+from `roles.sql`.
 
 ```sql
 CREATE USER 'backend_user'@'localhost'
 IDENTIFIED VIA parsec USING PASSWORD('ReplaceWithYourOwnStrongPassword!');
+
 GRANT backend_role TO 'backend_user'@'localhost';
+
 SET DEFAULT ROLE backend_role FOR 'backend_user'@'localhost';
+
 SHOW GRANTS FOR 'backend_user'@'localhost';
 SHOW GRANTS FOR backend_role;
 ```
 
-Connect as `backend_user` in a separate terminal (use the full executable path if MariaDB is not in PATH):
+Connect as `backend_user` in a separate PowerShell terminal:
 
 ```powershell
-mariadb --host=127.0.0.1 --port=3306 --user=backend_user -p
+& "C:\Program Files\MariaDB 13.1\bin\mariadb.exe" --no-defaults --protocol=tcp --host=127.0.0.1 --port=3306 --user=backend_user --plugin-dir="C:\Program Files\MariaDB 13.1\lib\plugin" -p
 ```
+
+Adjust the installation path and port if necessary.
+Enter the password chosen when creating `backend_user`.
+
+Verify the authenticated account and active role:
 
 ```sql
 SELECT CURRENT_USER(), CURRENT_ROLE();
 SELECT * FROM constructor_security.courses;
 ```
 
-The account should authenticate and `backend_role` should be active. Test grade deletion as described in Section 7.2. PARSEC authenticates the database connection; it does not replace the portal user's password hash or eliminate the local database secret.
+The account should authenticate and `backend_role`
+should be active. Test grade deletion as described in
+Section 7.2. PARSEC authenticates the database connection;
+it does not replace the portal user's password hash
+or eliminate the local database secret.
 
 #### Password complexity and reuse prevention
 
-Return to the administrator SQL session. Install each plugin only if it is not already active:
+Return to the administrator SQL session. Install each
+plugin only if it is not already active:
 
 ```sql
 INSTALL SONAME 'simple_password_check';
+
 SET GLOBAL simple_password_check_minimal_length = 8;
 SET GLOBAL simple_password_check_digits = 1;
 SET GLOBAL simple_password_check_letters_same_case = 1;
 SET GLOBAL simple_password_check_other_characters = 1;
+
 SHOW VARIABLES LIKE 'simple_password_check%';
+
 INSTALL SONAME 'password_reuse_check';
+
 SET GLOBAL password_reuse_check_interval = 0;
+
 SHOW VARIABLES LIKE 'password_reuse_check_interval';
 SHOW PLUGINS;
 ```
