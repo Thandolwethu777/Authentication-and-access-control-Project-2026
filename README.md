@@ -31,7 +31,7 @@ git clone https://github.com/Thandolwethu777/Authentication-and-access-control-P
 cd Authentication-and-access-control-Project-2026
 ```
 
-Use the submitted review revision when checking out the project. A clone of the upstream default branch will contain the earlier implementation until the reviewed changes are integrated.
+Once the reviewed submission is on main, the clone above contains the submitted project. During pull-request review, run `git switch --track origin/codex/area5-submission` after cloning the published review branch into a fresh checkout.
 
 Create a virtual environment and install the required Python dependencies by running the following commands in PowerShell:
 
@@ -216,9 +216,6 @@ The frontend was developed with HTML5, CSS3 and JavaScript. It includes a univer
 
 ![Login page](screenshots/loginpage.png)
 
-⭐ Student dashboard
-
-⭐ Grades, courses and enrolments
 
 ### 6.1 Run the application
 
