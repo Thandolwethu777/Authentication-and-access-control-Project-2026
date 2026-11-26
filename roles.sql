@@ -56,9 +56,12 @@ TO lecturer_role;
 
 CREATE ROLE IF NOT EXISTS admin_role;
 
-GRANT ALL PRIVILEGES
-ON constructor_security.*
-TO admin_role;
+GRANT SELECT ON constructor_security.students TO admin_role;
+GRANT SELECT ON constructor_security.lecturers TO admin_role;
+GRANT SELECT ON constructor_security.courses TO admin_role;
+GRANT SELECT ON constructor_security.course_lecturers TO admin_role;
+GRANT SELECT ON constructor_security.enrolments TO admin_role;
+GRANT SELECT, UPDATE (grade) ON constructor_security.grades TO admin_role;
 
 -- Backend role for the Flask application
 CREATE ROLE IF NOT EXISTS backend_role;
@@ -71,10 +74,12 @@ GRANT SELECT ON constructor_security.lecturers TO backend_role;
 GRANT SELECT ON constructor_security.enrolments TO backend_role;
 
 -- Grade management permissions
-GRANT SELECT, INSERT, UPDATE ON constructor_security.grades TO backend_role;
+GRANT SELECT, UPDATE (grade) ON constructor_security.grades TO backend_role;
 
 -- Portal demonstration role
 CREATE ROLE IF NOT EXISTS portal_demo_role;
 
 GRANT SELECT ON constructor_security.*
 TO portal_demo_role;
+
+GRANT SELECT ON constructor_security.course_lecturers TO backend_role;

@@ -11,11 +11,9 @@ from pathlib import Path
 # Allow importing the existing project's db.py when launched from scripts/.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash
 
-load_dotenv(Path(__file__).resolve().parents[1] / '.env')
-from db import get_connection
+from db import connect_as
 
 USERS = ('student1', 'student2', 'lecturer1', 'admin1')
 
@@ -25,7 +23,8 @@ def main():
     print('This updates password hashes only; other account details stay unchanged.')
     connection = None
     try:
-        connection = get_connection()
+        user = input('Provisioning MariaDB username: ').strip()
+        connection = connect_as(user, getpass.getpass('Provisioning MariaDB password: '))
         cursor = connection.cursor()
         cursor.execute(
             "SELECT username FROM app_users WHERE username IN (?, ?, ?, ?) AND is_active = TRUE",
@@ -59,7 +58,7 @@ def main():
     except Exception as exc:
         if connection is not None:
             connection.rollback()
-        print(f'Setup failed: {exc}', file=sys.stderr)
+        print(f'Setup failed ({type(exc).__name__}, code {getattr(exc, "errno", None)}).', file=sys.stderr)
         sys.exit(1)
     finally:
         if connection is not None:

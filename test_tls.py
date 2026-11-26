@@ -1,16 +1,17 @@
-from db import get_connection
-
-conn = get_connection()
-cursor = conn.cursor()
-cursor.execute("SELECT @@port, CURRENT_USER()")
-print("Server and user:", cursor.fetchall())
+from db import get_connection, prompt_backend_password
 
 
-cursor.execute("SHOW SESSION STATUS LIKE 'Ssl_cipher'")
-print("TLS cipher:", cursor.fetchall())
+def main():
+    prompt_backend_password()
+    with get_connection() as connection, connection.cursor() as cursor:
+        cursor.execute("SELECT @@port, CURRENT_USER(), CURRENT_ROLE()")
+        print("Server port, account and role", cursor.fetchone())
+        cursor.execute("SHOW SESSION STATUS WHERE Variable_name IN ('Ssl_version', 'Ssl_cipher')")
+        status = dict(cursor.fetchall())
+        if not all(status.get(k) for k in ("Ssl_version", "Ssl_cipher")):
+            raise RuntimeError("Could not verify TLS on the application connection")
+        print("PASS", status["Ssl_version"], status["Ssl_cipher"])
 
-cursor.execute("SHOW SESSION STATUS LIKE 'Ssl_version'")
-print("TLS version:", cursor.fetchall())
 
-cursor.close()
-conn.close()
+if __name__ == "__main__":
+    main()
