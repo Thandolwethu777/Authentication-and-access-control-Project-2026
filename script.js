@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
             loginMessage.textContent = "Login successful!";
             loginMessage.style.color = "green";
 
-            window.location.href = "/dashboard.html";
+            window.location.href = result.dashboard;
 
         } catch (error) {
             loginMessage.textContent =

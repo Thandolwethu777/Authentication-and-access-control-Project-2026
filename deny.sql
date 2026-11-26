@@ -22,3 +22,6 @@ TO lecturer_role;
 -- Explicit DENY demonstration
 DENY SELECT ON constructor_security.app_users
 TO portal_demo_role;
+
+-- The shared Flask identity may change grade values only.
+DENY INSERT, DELETE ON constructor_security.grades TO backend_role;

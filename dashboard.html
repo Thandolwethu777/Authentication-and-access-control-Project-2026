@@ -25,37 +25,24 @@
     <div class="navwrap"><nav class="nav" aria-label="Academic navigation">
       <button class="tab active" data-view="courses" aria-current="page"><svg class="icon"><use href="#i-book"/></svg>Courses</button>
       <button class="tab" data-view="grades"><svg class="icon"><use href="#i-grade"/></svg>Grades</button>
-      <button class="tab" data-view="enrollment"><svg class="icon"><use href="#i-list"/></svg>Enrollment</button>
+      <button class="tab" data-view="enrolments"><svg class="icon"><use href="#i-list"/></svg>Enrollment</button>
     </nav></div>
   </header>
-  <main>
+  <main data-role="student">
     <div class="intro"><div><div class="eyebrow">Academic services</div><h1>Welcome to your student portal</h1><p class="sub">View your courses, academic results, and enrollment information.</p></div><span class="pill">Student dashboard</span></div>
     <section id="courses" class="view active" aria-label="Courses">
       <div class="cards">
         <article class="card"><div class="cardicon"><svg class="icon"><use href="#i-book"/></svg></div><h3>My Courses</h3><p>See the courses linked to your student account.</p><button data-go="courses">View courses →</button></article>
         <article class="card"><div class="cardicon"><svg class="icon"><use href="#i-grade"/></svg></div><h3>My Grades</h3><p>Review the academic results available to you.</p><button data-go="grades">View grades →</button></article>
-        <article class="card"><div class="cardicon"><svg class="icon"><use href="#i-list"/></svg></div><h3>My Enrollment</h3><p>Check your registered courses and enrollment details.</p><button data-go="enrollment">View enrollment →</button></article>
+        <article class="card"><div class="cardicon"><svg class="icon"><use href="#i-list"/></svg></div><h3>My Enrollment</h3><p>Check your registered courses and enrollment details.</p><button data-go="enrolments">View enrollment →</button></article>
       </div>
-      <div class="panel"><div class="panelhead"><h2>My Courses</h2><span class="eyebrow">Course overview</span></div><div class="empty" id="courses-empty">No course data loaded yet.</div></div>
+      <div class="panel"><div class="panelhead"><h2>My Courses</h2><span class="eyebrow">Course overview</span></div><div class="tablewrap" id="table-courses"></div></div>
     </section>
-    <section id="grades" class="view" aria-label="Grades"><div class="panel"><div class="panelhead"><h2>Academic Results</h2><span class="eyebrow">My grades</span></div><div class="tablewrap"><table><thead><tr><th>Course code</th><th>Course name</th><th>Grade</th></tr></thead><tbody id="grades-body"><tr><td colspan="3" class="empty">No grade data loaded yet.</td></tr></tbody></table></div></div></section>
-    <section id="enrollment" class="view" aria-label="Enrollment"><div class="panel"><div class="panelhead"><h2>Enrollment Information</h2><span class="eyebrow">My registrations</span></div><div class="tablewrap"><table><thead><tr><th>Course code</th><th>Course name</th><th>Enrollment date</th></tr></thead><tbody id="enrollment-body"><tr><td colspan="3" class="empty">No enrollment data loaded yet.</td></tr></tbody></table></div></div></section>
+    <section id="grades" class="view" aria-label="Grades"><div class="panel"><div class="panelhead"><h2>Academic Results</h2><span class="eyebrow">My grades</span></div><div class="tablewrap" id="table-grades"></div></div></section>
+    <section id="enrolments" class="view" aria-label="Enrollment"><div class="panel"><div class="panelhead"><h2>Enrollment Information</h2><span class="eyebrow">My registrations</span></div><div class="tablewrap" id="table-enrolments"></div></div></section>
   
     <div class="foot">© 2026 Constructor University · Student Security Portal</div>
   </main>
-  <script>
-    function showView(name) {
-      document.querySelectorAll('.view').forEach(section => section.classList.toggle('active', section.id === name));
-      document.querySelectorAll('.tab').forEach(button => {
-        const active = button.dataset.view === name;
-        button.classList.toggle('active', active);
-        if (active) button.setAttribute('aria-current', 'page');
-        else button.removeAttribute('aria-current');
-      });
-    }
-    document.querySelectorAll('[data-view]').forEach(button => button.addEventListener('click', () => showView(button.dataset.view)));
-    document.querySelectorAll('[data-go]').forEach(button => button.addEventListener('click', () => showView(button.dataset.go)));
-  </script>
-  <script src="/dashboard.js"></script>
+  <script src="/role-dashboard.js"></script>
 </body>
 </html>

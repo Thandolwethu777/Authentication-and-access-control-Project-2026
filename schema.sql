@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS enrolments (
 CREATE TABLE IF NOT EXISTS grades (
     grade_id INT PRIMARY KEY AUTO_INCREMENT,
     enrolment_id INT NOT NULL,
-    grade DECIMAL(5,2),
+    grade DECIMAL(5,2) CHECK (grade BETWEEN 0 AND 100),
     FOREIGN KEY (enrolment_id) REFERENCES enrolments(enrolment_id)
 );
 
@@ -58,4 +58,16 @@ CREATE TABLE IF NOT EXISTS app_users (
         OR (user_role = 'lecturer' AND lecturer_id IS NOT NULL AND student_id IS NULL)
         OR (user_role = 'admin' AND student_id IS NULL AND lecturer_id IS NULL)
     )
+);
+
+-- Natural keys prevent duplicate registrations and multiple final grades.
+-- On older installations these additions fail visibly if existing rows conflict.
+ALTER TABLE enrolments ADD UNIQUE INDEX IF NOT EXISTS uq_registration (student_id, course_id);
+ALTER TABLE grades ADD UNIQUE INDEX IF NOT EXISTS uq_final_grade (enrolment_id);
+CREATE TABLE IF NOT EXISTS course_lecturers (
+    course_id INT NOT NULL,
+    lecturer_id INT NOT NULL,
+    PRIMARY KEY (course_id, lecturer_id),
+    FOREIGN KEY (course_id) REFERENCES courses(course_id),
+    FOREIGN KEY (lecturer_id) REFERENCES lecturers(lecturer_id)
 );

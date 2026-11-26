@@ -67,3 +67,12 @@ FROM lecturers l WHERE l.email = 'maria.schmidt@example.com'
 INSERT INTO app_users (username, email, user_role, student_id, lecturer_id)
 SELECT 'admin1', 'admin@example.com', 'admin', NULL, NULL
 WHERE NOT EXISTS (SELECT 1 FROM app_users a WHERE a.username = 'admin1');
+
+INSERT INTO course_lecturers (course_id, lecturer_id)
+SELECT c.course_id, l.lecturer_id
+FROM courses c JOIN lecturers l ON
+    (c.course_code = 'CS101' AND l.email = 'maria.schmidt@example.com') OR
+    (c.course_code = 'CS201' AND l.email = 'james.johnson@example.com') OR
+    (c.course_code = 'EC101' AND l.email = 'anna.muller@example.com')
+WHERE NOT EXISTS (SELECT 1 FROM course_lecturers cl
+                  WHERE cl.course_id = c.course_id AND cl.lecturer_id = l.lecturer_id);
